@@ -2,7 +2,7 @@
 //跟栈类似，也是一种受限的线性表，先进先出（后进后出）
 
 // 队列的实现
-function Queue() {
+export default function Queue() {
     this.items = [];
 }
 
