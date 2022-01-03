@@ -84,7 +84,7 @@ Graph.prototype.bfs = function (handle) {
 
         // 4.5 将顶点置为黑色
         colors[qVal] = "black";
-        if (handle) handle(qVal); //触发回调
+        if (handle) handle(qVal); //触发回调，进行操作
     }
 };
 
@@ -97,13 +97,22 @@ Graph.prototype.dfs = function (handle) {
 };
 
 Graph.prototype.dfsVisit = function (v, colors, handler) {
+    // 1.将颜色设置成灰色
+    colors[v] = "gray"; //触发回调，进行操作
 
-    let vEdges = this.edges[v]
-    for (let i = 0; i < array.length; i++) {
-        const element = array[i];
-        
+    handler(v)
+    let vEdges = this.edges.get(v);
+
+    // 2.递归调用，遍历相连的顶点
+    for (let i = 0; i < vEdges.length; i++) {
+        const e = vEdges[i];
+        if (colors[e] === "white") {
+            this.dfsVisit(e, colors, handler);
+        }
     }
-}
+    // 3.设置成黑色
+    colors[v] = "black";
+};
 
 let g = new Graph();
 
@@ -126,5 +135,10 @@ g.addEdge("E", "I");
 
 console.log(g.toString());
 g.bfs((v) => {
+    console.log(v);
+});
+
+console.log("--------");
+g.dfs((v) => {
     console.log(v);
 });
