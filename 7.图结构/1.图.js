@@ -11,7 +11,7 @@ function Graph() {
 // 添加顶点
 Graph.prototype.addVertex = function (v) {
     this.vertexes.push(v);
-    this.edges.set(v, []); //用来存储边
+    this.edges.set(v, []); //用来存储边，顶点和边建立映射关系
 };
 
 // 添加边
