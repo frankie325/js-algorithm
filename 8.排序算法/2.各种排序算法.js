@@ -140,6 +140,152 @@ ArrayList.prototype.insertSort = function () {
     }
 };
 
+// 高级排序：
+
+/*
+希尔排序：
+将待排序元素进行增量分组，
+按照增量的间隔，即分组的元素，进行插入排序
+接着递减增量，重复上述步骤，直到增量为1，排序完成
+
+选择不同的增量，排序效率稍有不同，下面增量以数组长度除以2为示例
+*/
+
+ArrayList.prototype.shellSort = function () {
+    let length = this.array.length;
+    let gap = Math.floor(length / 2); //增量为数组长度除以2
+    while (gap >= 1) {
+        // 按照增量为间隔对元素进行插入排序
+        for (let i = gap; i <= length - 1; i++) {
+            let j = i;
+            let temp = this.array[i];
+            while (this.array[j - gap] > temp && j > gap - 1) {
+                this.array[j] = this.array[j - gap];
+                j -= gap;
+            }
+            this.array[j] = temp;
+        }
+
+        // 增量继续减半
+        gap = Math.floor(gap / 2);
+    }
+};
+
+/*
+快速排序:
+
+找到一个基准值，即枢纽
+常见策略有选中间、随机选、三选一
+
+然后将数组分为比基准值小的元素
+比基准值大的元素
+
+排列成以下形式
+比基准值小的元素  基准值  比基准值大的元素
+
+接着分别对基准值两边的数组继续上述步骤，直至基准直左侧（右侧）只有一个数据，则排序完成
+快排有多种写法，举几个例子
+*/
+
+/*
+五行代码的快速排序，非原地排序，需要开辟额外的空间
+function quickSort(array) {
+    if (array.length == 0) return []; //结束条件，返回空数组，保证扩展符不会报错
+    let pivot = array[array.length - 1];  //选取枢纽
+    let left = array.filter((v, i) => v <= pivot && i != array.length - 1); //筛选出小于枢纽的数组
+    let right = array.filter((v) => v > pivot); //筛选出大于枢纽的数组
+    return [...quickSort(left), pivot, ...quickSort(right)]; //递归
+}
+*/
+
+
+function swap(arr, i, j) {
+    let temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+}
+
+// https://juejin.cn/post/6844903938915827725
+// 这个快排是原地排序，不需要额外空间
+function quickSort(arr, start = 0, end = arr.length - 1) {
+    if (end - start < 1) return; //如果只有一个元素，结束递归
+    let pivotIndex = partition(arr, start, end);
+    // 分而治之
+    quickSort(arr, start, pivotIndex - 1);
+    quickSort(arr, pivotIndex + 1, end);
+    return arr;
+}
+
+function partition(arr, start, end) {
+    let pivot = arr[end]; //选择枢纽，取最后一个元素
+    let j = start; //交换的元素位置
+    for (let i = start; i <= end; i++) {
+        //从开始位置进行遍历
+        if (arr[i] <= pivot) {
+            //比枢纽小的元素，与j进行交换，j加一
+            swap(arr, i, j++);
+        }
+    }
+    // 枢纽的位置
+    return j - 1;
+}
+
+console.log(quickSort([100, 90, 10, 30, 70, 20, 50, 40, 60, 80]));
+// 选择枢纽
+// ArrayList.prototype.median = function (left, right) {
+//     let center = Math.floor((left + right) / 2);
+//     // 选择数组头中尾，进行排序
+//     if (this.array[left] > this.array[center]) {
+//         this.swap(left, center);
+//     }
+//     if (this.array[center] > this.array[right]) {
+//         this.swap(center, right);
+//     }
+//     if (this.array[left] > this.array[center]) {
+//         this.swap(left, center);
+//     }
+
+//     // 将中位数与最右边的位置减一进行交换
+//     this.swap(center, right - 1);
+
+//     // 该中位数就是我们选择的枢纽
+//     return this.array[right - 1];
+// };
+
+// ArrayList.prototype.quickSort = function () {
+//     this.quick(0, this.array.length - 1);
+// };
+
+// ArrayList.prototype.quick = function (left, right) {
+//     // 如果left大于大于right，说明排序已完成，结束递归
+//     if (left >= right) return;
+//     // 找到枢纽
+//     let pivot = this.median(left, right);
+
+//     let i = left; //左边的指针
+//     let j = right - 1; //右边的指针
+//     console.log(i);
+//     while (true) {
+//         while (this.array[++i] < pivot) {
+//             console.log(i);
+//         } //从左开始找到比枢纽大的位置
+//         while (this.array[--j] > pivot) {} //从右开始找到比枢纽小的位置
+//         if (i < j) {
+//             //如果左指针小于右指针，则将元素进行交换
+//             this.swap(i, j);
+//         } else {
+//             // 一旦左指针大于等于右指针，则跳出循环，将枢纽的位置与i进行互换
+//             break;
+//         }
+//     }
+//     // 枢纽的与i位置的元素进行交换，此时枢纽左边的值都小于它，右边的值都大于它
+//     this.swap(i, right - 1);
+
+//     // 分而治之，继续进行递归
+//     this.quick(left, i - 1);
+//     this.quick(i + 1, right);
+// };
+
 let arr = new ArrayList();
 arr.insert(100);
 arr.insert(90);
@@ -154,5 +300,7 @@ arr.insert(80);
 
 // arr.bubbleSort();
 // arr.selectSort();
-arr.insertSort();
+// arr.insertSort();
+// arr.shellSort();
+// arr.quickSort();
 console.log(arr.toString());
